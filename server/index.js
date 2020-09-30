@@ -48,7 +48,7 @@ app.post('/list', async(req, res, next) => {
                 });
                 next(error);
             }else {
-                req.json(entry);
+                res.json(entry);
             }
         }catch (error){
             next(error);
