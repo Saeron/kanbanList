@@ -218,8 +218,10 @@
 
 <script>
 import draggable from "vuedraggable";
+const API_URL = "http://localhost:5000/";
 export default {
   data: () => ({
+    uuid: "",
     refItem: {},
     modElement: {
       newTicket: "",
@@ -240,6 +242,31 @@ export default {
     list2: [],
     list3: []
   }),
+  mounted() {
+    this.uuid = this.$route.params.id;
+    const body = {
+      uuid: this.uuid
+    };
+    console.log(this.uuid);
+    try {
+      fetch(API_URL + "list", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(body)
+      })
+        .then(res => res.json())
+        .then(result => {
+          console.log(result);
+          this.list1 = result.list1;
+          this.list2 = result.list2;
+          this.list3 = result.list3;
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  },
   components: {
     draggable
   },

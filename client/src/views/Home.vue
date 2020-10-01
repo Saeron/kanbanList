@@ -8,9 +8,15 @@
           </span>
           Kaban List
         </h1>
-        <h2 class="subtitle">Draggable list made following the kaban method. Made with Vue and Node.</h2>
+        <h2 class="subtitle">
+          Draggable list made following the kaban method. Made with Vue and
+          Node.
+        </h2>
         <button @click="createCols()" class="button is-primary">Begin</button>
-        <button @click="$router.push('/info')" class="button ml-3 is-primary is-outlined">
+        <button
+          @click="$router.push('/info')"
+          class="button ml-3 is-primary is-outlined"
+        >
           <span class="icon">
             <i class="fas fa-info"></i>
           </span>
@@ -35,10 +41,25 @@
 </style>
 
 <script>
+const API_URL = "http://localhost:5000/";
 export default {
   methods: {
-    createCols(){
-      this.$router.push("/columns")
+    createCols() {
+      try {
+        fetch(API_URL + "list", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          }
+        })
+          .then(res => res.json())
+          .then(result => {
+            var uuid = result.uuid;
+            this.$router.push(`/columns/${uuid}`);
+          });
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
   name: "Home",

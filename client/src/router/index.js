@@ -12,10 +12,10 @@ const routes = [
     component: Home
   },
   {
-    path: "/columns",
+    path: "/columns/:id",
     name: "Columns",
     component: Columns
-  },
+  }
 ];
 
 const router = new VueRouter({

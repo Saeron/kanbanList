@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const { v4: uuidv4 } = require("uuid");
+const cors = require("cors");
 const mongoose = require('mongoose');
 const BoardEntry = require('./models/board');
 
@@ -12,6 +13,8 @@ mongoose.connect(process.env.DATABASE_URL || "mongodb://localhost:27017/kanban",
 });
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
