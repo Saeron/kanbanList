@@ -114,7 +114,6 @@
     </div>
 
     <!-- Page content -->
-    <h1 class="title has-text-centered has-text-white">Title</h1>
     <div class="cont ">
       <article class="panel is-primary column has-background-primary-light	">
         <p class="panel-heading">
@@ -267,6 +266,73 @@ export default {
       console.log(error);
     }
   },
+  watch: {
+    list1: {
+      deep: true,
+      handler() {
+        console.log("Updating list");
+        try {
+          fetch(API_URL + "updateLists", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json"
+            },
+            body: JSON.stringify({
+              uuid: this.uuid,
+              list1: this.list1,
+              list2: this.list2,
+              list3: this.list3
+            })
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    list2: {
+      deep: true,
+      handler() {
+        try {
+          fetch(API_URL + "updateLists", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json"
+            },
+            body: JSON.stringify({
+              uuid: this.uuid,
+              list1: this.list1,
+              list2: this.list2,
+              list3: this.list3
+            })
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    list3: {
+      deep: true,
+      handler() {
+        console.log("Updating list");
+        try {
+          fetch(API_URL + "updateLists", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json"
+            },
+            body: JSON.stringify({
+              uuid: this.uuid,
+              list1: this.list1,
+              list2: this.list2,
+              list3: this.list3
+            })
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  },
   components: {
     draggable
   },
@@ -359,6 +425,7 @@ body {
 .cont {
   display: flex;
   flex-direction: row;
+  margin-top: 5%;
 }
 .column {
   min-width: 350px !important;
