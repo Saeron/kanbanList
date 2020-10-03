@@ -5,8 +5,9 @@ const cors = require("cors");
 const mongoose = require('mongoose');
 const BoardEntry = require('./models/board');
 
+require("dotenv").config();
 
-mongoose.connect(process.env.DATABASE_URL || "mongodb://localhost:27017/kanban", {
+mongoose.connect(process.env.DATABASE_URL || "http://localhost:mongodb://localhost:27017/kanban", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -14,16 +15,14 @@ mongoose.connect(process.env.DATABASE_URL || "mongodb://localhost:27017/kanban",
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.CORS_ORIGIN
+}));
 app.use(express.json());
+if (process.env.NODE_ENV ==="production"){
+    app.use(express.static("./client/dist"));
+}
 app.use(morgan('dev'));
-
-
-app.get('/', (req, res, next) => {
-    res.json({
-        message: uuidv4()
-    });
-});
 
 async function createBoard(req, res, next){
     req.body.uuid = uuidv4();
@@ -68,4 +67,9 @@ app.post('/updateLists', async(req, res, next) =>{
         res.json(result);
     });
 });
-app.listen(5000);
+
+const port = process.env.PORT || 5000;
+
+app.listen(port, () => {
+    console.log(`Running on: http://localhost:${port}`);
+});
