@@ -5,7 +5,8 @@ const { Schema } = mongoose;
 
 const listType = {
     type: [ticketSchema],
-    default: []
+    default: [],
+    require: true
 };
 
 const boardScheme = new Schema(

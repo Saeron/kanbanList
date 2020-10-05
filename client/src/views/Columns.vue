@@ -115,108 +115,41 @@
 
     <!-- Page content -->
     <div class="cont ">
-      <article class="panel is-primary column has-background-primary-light	">
-        <p class="panel-heading">
-          To-Do
-          <button @click="togglePop()" class="btn-none has-text-right">
-            <i class="fas fa-plus"></i>
-          </button>
-        </p>
+      <boardList
+        title="To-Do"
+        :list="list1"
+        :modify="modifyPop"
+        :toggle="togglePop"
+        :buttonShow="true"
+        v-on:delete="emitedList($event)"
+        class="is-primary"
+      />
 
-        <draggable class="dragzone" :list="list1" group="tasks">
-          <a
-            @click="modifyPop(item)"
-            class="panel-block is-active"
-            v-for="item in list1"
-            :key="item.id"
-          >
-            <div class="ticket">
-              <nav class="breadcrumb" aria-label="breadcrumbs">
-                <ul>
-                  <li v-for="(tag, index) in item.tags" :key="index">
-                    {{ tag }}
-                  </li>
-                </ul>
-                <button
-                  class="delete rigthDelete has-background-danger-dark"
-                  @click.stop="deleteItem(list1, item)"
-                >
-                  remove
-                </button>
-              </nav>
-              <p>{{ item.text }}</p>
-            </div>
-          </a>
-        </draggable>
-      </article>
+      <boardList
+        title="In-Progress"
+        :list="list2"
+        :modify="modifyPop"
+        :toggle="togglePop"
+        :buttonShow="false"
+        v-on:delete="emitedList($event)"
+        class="is-danger"
+      />
 
-      <article class="panel is-danger column has-background-primary-light">
-        <p class="panel-heading">
-          In-Progress
-        </p>
-        <draggable class="dragzone" :list="list2" group="tasks">
-          <a
-            @click="modifyPop(item)"
-            class="panel-block is-active"
-            v-for="item in list2"
-            :key="item.id"
-          >
-            <div class="ticket">
-              <nav class="breadcrumb" aria-label="breadcrumbs">
-                <ul>
-                  <li v-for="(tag, index) in item.tags" :key="index">
-                    {{ tag }}
-                  </li>
-                </ul>
-                <button
-                  class="delete rigthDelete has-background-danger-dark"
-                  @click.stop="deleteItem(list2, item)"
-                >
-                  remove
-                </button>
-              </nav>
-              <p>{{ item.text }}</p>
-            </div>
-          </a>
-        </draggable>
-      </article>
-
-      <article class="panel is-success column has-background-primary-light">
-        <p class="panel-heading">
-          Finished
-        </p>
-        <draggable class="dragzone" :list="list3" group="tasks">
-          <a
-            @click="modifyPop(item)"
-            class="panel-block is-active"
-            v-for="item in list3"
-            :key="item.id"
-          >
-            <div class="ticket">
-              <nav class="breadcrumb" aria-label="breadcrumbs">
-                <ul>
-                  <li v-for="(tag, index) in item.tags" :key="index">
-                    {{ tag }}
-                  </li>
-                </ul>
-                <button
-                  class="delete rigthDelete has-background-danger-dark"
-                  @click.stop="deleteItem(list3, item)"
-                >
-                  remove
-                </button>
-              </nav>
-              <p>{{ item.text }}</p>
-            </div>
-          </a>
-        </draggable>
-      </article>
+      <boardList
+        title="Finished"
+        :list="list3"
+        :modify="modifyPop"
+        :toggle="togglePop"
+        :buttonShow="false"
+        v-on:delete="emitedList($event)"
+        class="is-success"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
+import boardList from "../components/BoardList";
 const API_URL = "http://localhost:5000/";
 export default {
   data: () => ({
@@ -231,13 +164,7 @@ export default {
     active: false,
     isDragging: false,
     editable: true,
-    list1: [
-      { id: 1, tags: ["front"], text: "bulma" },
-      { id: 2, tags: ["middle"], text: "draggable" },
-      { id: 3, tags: ["front", "middle"], text: "vue" },
-      { id: 4, tags: ["back", "middle"], text: "node" },
-      { id: 5, tags: ["back", "middle"], text: "express" }
-    ],
+    list1: [],
     list2: [],
     list3: []
   }),
@@ -246,7 +173,6 @@ export default {
     const body = {
       uuid: this.uuid
     };
-    console.log(this.uuid);
     try {
       fetch(API_URL + "list", {
         method: "POST",
@@ -257,7 +183,6 @@ export default {
       })
         .then(res => res.json())
         .then(result => {
-          console.log(result);
           this.list1 = result.list1;
           this.list2 = result.list2;
           this.list3 = result.list3;
@@ -270,7 +195,6 @@ export default {
     list1: {
       deep: true,
       handler() {
-        console.log("Updating list");
         try {
           fetch(API_URL + "updateLists", {
             method: "POST",
@@ -313,7 +237,6 @@ export default {
     list3: {
       deep: true,
       handler() {
-        console.log("Updating list");
         try {
           fetch(API_URL + "updateLists", {
             method: "POST",
@@ -334,17 +257,18 @@ export default {
     }
   },
   components: {
-    draggable
+    boardList
   },
   methods: {
-    deleteItem(list, item) {
-      const modList = list.filter(ticket => ticket.id != item.id);
-      if (list === this.list1) {
-        this.list1 = modList;
-      } else if (list === this.list2) {
-        this.list2 = modList;
-      } else {
-        this.list3 = modList;
+    emitedList(lists) {
+      if (lists.modlist) {
+        if (lists.original === this.list1) {
+          this.list1 = lists.modlist;
+        } else if (lists.original === this.list2) {
+          this.list2 = lists.modlist;
+        } else if (lists.original === this.list3) {
+          this.list3 = lists.modlist;
+        }
       }
     },
     modifyTicket() {
@@ -376,12 +300,28 @@ export default {
     },
     addTicket() {
       if (this.modElement.newTicket) {
-        this.list1.push({
-          text: this.modElement.newTicket,
-          tags: this.modElement.newTags,
-          id: Math.random() * 100
-        });
-        this.modElement.newTicket = "";
+        try {
+          fetch(API_URL + "addTicket", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json"
+            },
+            body: JSON.stringify({
+              uuid: this.uuid,
+              item: {
+                text: this.modElement.newTicket,
+                tags: this.modElement.newTags
+              }
+            })
+          })
+            .then(res => res.json())
+            .then(result => {
+              this.list1 = result.list1;
+            });
+          this.modElement.newTicket = "";
+        } catch (error) {
+          console.error(error);
+        }
       }
       this.togglePop();
     }
@@ -433,14 +373,5 @@ body {
   min-height: 500px;
   margin: 1rem;
   border-radius: 5px;
-}
-.to-Do {
-  background-color: aqua;
-}
-.in-Progress {
-  background-color: rgb(24, 153, 104);
-}
-.finished {
-  background-color: rgb(3, 124, 33);
 }
 </style>
