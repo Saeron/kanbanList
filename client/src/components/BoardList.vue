@@ -70,4 +70,32 @@ export default {
   margin: 1rem;
   border-radius: 5px;
 }
+.btn-none {
+  background: none;
+  border: none;
+  color: white;
+  float: right;
+  font-size: 1.3rem;
+}
+.dragzone {
+  height: 90%;
+  overflow-y: auto;
+}
+.rigthDelete {
+  float: right;
+}
+.ticket {
+  width: 100%;
+}
+.breadcrumb {
+  font-size: 0.8rem !important;
+  color: hsl(204, 86%, 53%);
+}
+.column {
+  min-width: 350px !important;
+  height: 80vh;
+  min-height: 500px;
+  margin: 1rem;
+  border-radius: 5px;
+}
 </style>
