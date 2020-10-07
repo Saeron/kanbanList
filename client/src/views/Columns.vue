@@ -2,6 +2,7 @@
 <template>
   <!-- Popup -->
   <div class="background has-background-primary-dark">
+    <h1 class="myTitle">Kanban</h1>
     <popUp
       :toggle="togglePop"
       :activate="active"
@@ -254,9 +255,13 @@ body {
   height: 100vh;
   overflow-x: auto;
 }
+.myTitle {
+  color: white;
+  text-align: center;
+  font-size: 6rem;
+}
 .cont {
   display: flex;
   flex-direction: row;
-  margin-top: 5%;
 }
 </style>
